@@ -117,4 +117,109 @@ Community Edition Limit:
 
 ---
 
-Generated automatically as requested.
+# 🚀 2. Workspace Navigation
+
+## 2.1 Creating & Managing Notebooks
+- Create via: **Workspace → Create → Notebook**
+- Supports Python, SQL, Scala, R
+- Actions: rename, move, export, delete
+- Attach to cluster, run cells, use markdown, revision history
+
+---
+
+## 2.2 Uploading & Managing Data
+- Upload via: **Data → Add Data**
+- Supports CSV, JSON, Parquet
+- Auto-create Delta tables
+- Data preview, schema view, profiling
+- Query using SQL editor
+
+---
+
+## 2.3 Managing Clusters
+- Path: **Compute → Select Cluster**
+- Start/stop cluster
+- Edit configuration
+- View Spark UI (jobs, stages, executors)
+- Attach/detach notebooks
+
+---
+
+## 2.4 Accessing Libraries
+- Path: **Compute → Cluster → Libraries**
+- Install from PyPI or upload JAR/Wheel
+- Shows installed libs and status
+- Some libraries require restart
+
+---
+
+## 2.5 Collaboration & Sharing
+- (Paid edition) Share folders/notebooks
+- Permissions: View, Run, Edit, Manage
+- Commenting on cells
+
+---
+
+## 2.6 Sharing Notebooks
+- Methods:
+  - Add users (paid edition)
+  - Export as HTML, DBC, or .py
+  - Share link (if enabled)
+
+---
+
+## 2.7 Collaborative Editing
+- Real-time editing (paid edition)
+- See other users' cursors
+- Comments + threaded discussions
+
+---
+
+## 2.8 Version History
+- Access via clock icon in notebook
+- Auto-saved checkpoints
+- Compare versions
+- Restore previous version
+
+---
+
+# 🚀 3. Cluster Creation
+
+## 3.1 Cluster Configuration
+- Select Databricks Runtime (DBR)
+- Set driver & worker node types
+- Configure autoscaling
+- Set termination timeout
+- Attach init scripts if needed
+- Add environment variables
+
+---
+
+## 3.2 Cluster Types
+### **Standard Cluster**
+- General-purpose
+- Designed for single-user interactive work
+- Supports libraries & custom configs
+
+### **High Concurrency Cluster**
+- Multi-user optimized
+- Concurrency & security isolation
+- Good for SQL/BI workloads
+
+---
+
+## 3.3 Worker Node Types
+- **General Purpose:** balanced CPU/RAM
+- **Compute Optimized:** high CPU (fast ETL)
+- **Memory Optimized:** high RAM (joins, caching)
+- Choose based on workload pattern
+
+---
+
+## 3.4 Auto Scaling Options
+- Enable/disable autoscaling
+- Set min/max worker nodes
+- Automatically adjusts resources based on load
+- Saves cost + improves performance
+
+
