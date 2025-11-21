@@ -1,8 +1,8 @@
-# Databricks
+# 🌐 Databricks
 
 ---
 
-## **1. Databricks Overview**
+## 💥 Databricks Overview**
 Databricks is a unified analytics platform combining data engineering, data science, and machine learning.  
 The UI is designed to give easy access to compute, data, notebooks, and collaboration tools.
 
@@ -117,7 +117,7 @@ Community Edition Limit:
 
 ---
 
-# 🚀 2. Workspace Navigation
+# 💥 Workspace Navigation
 
 ## 2.1 Creating & Managing Notebooks
 - Create via: **Workspace → Create → Notebook**
@@ -183,7 +183,7 @@ Community Edition Limit:
 
 ---
 
-# 🚀 3. Cluster Creation
+# 💥 Cluster Creation
 
 ## 3.1 Cluster Configuration
 - Select Databricks Runtime (DBR)
