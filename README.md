@@ -448,5 +448,287 @@ df.write.orc("dbfs:/output/orc")
 
 ---
 
+## 8. Medallion Architecture (Completed)
+
+### 8.1 Introduction to Medallion
+The Medallion Architecture is a data design pattern used in modern lakehouses.  
+It organizes data into **Bronze (raw)**, **Silver (cleaned)**, and **Gold (business-ready)** layers  
+to improve quality, reliability, and reusability.
+
+### 8.2 Use Cases and Applications
+- Building scalable data pipelines  
+- ETL/ELT workflows  
+- Incremental processing  
+- Machine learning feature layers  
+- Reporting & dashboards  
+- Governance and data quality enforcement  
+
+---
+
+## 9. Delta Lake (Theory) (Completed)
+
+### 9.1 Introduction to Delta Lake
+Delta Lake is an open‑source storage layer providing ACID transactions on data lakes.
+It powers Databricks Lakehouse with reliability, schema enforcement, and performance.
+
+### 9.2 ACID Transactions
+Delta Lake provides:
+- **Atomicity** – operations completed fully or not at all  
+- **Consistency** – ensures valid state  
+- **Isolation** – reads do not see partial writes  
+- **Durability** – data is stored reliably  
+
+### 9.3 Time Travel
+Allows users to:
+- Query older versions of data  
+- Roll back mistakes  
+- Audit historical changes  
+Using:
+```sql
+SELECT * FROM table VERSION AS OF 5;
+```
+
+### 9.4 Delta Table
+A Delta table = Parquet files + Delta Log.  
+Supports:
+- Updates  
+- Deletes  
+- Merges  
+- Streaming reads/writes  
+
+### 9.5 Delta Log
+Stores each transaction under `_delta_log/`.  
+Contains:
+- JSON transaction files  
+- Checkpoints  
+Tracks the history of every write made to the table.
+
+### 9.6 Usage and Benefits
+- Reliability (ACID)  
+- Faster reads (data skipping, caching)  
+- Schema enforcement  
+- Scalable for streaming + batch  
+- Handles GDPR/delete use cases  
+
+### 9.7 Schema Evolution
+Allows table schema to change over time:
+- Add new columns  
+- Automatically adapt using:  
+```sql
+ALTER TABLE table ADD COLUMNS (...);
+```  
+or  
+```python
+df.write.option("mergeSchema", "true").save(...)
+```
+
+---
+
+# Advanced Topics — Databricks (Completed)
+
+## 10. Advanced Topics
+
+---
+
+## 10.1 Lakeflow Connect
+
+### 10.1.1 Upload Files
+Lakeflow Connect allows uploading data from:
+- Local machine
+- Cloud storage
+- External systems  
+Supports drag‑and‑drop uploads and automated ingestion.
+
+### 10.1.2 Managed Connectors
+Built‑in connectors that Databricks manages:
+- Salesforce
+- Snowflake
+- SQL Server
+- ADLS / S3 / GCS
+- Google Analytics  
+These require minimal configuration and are optimized for Lakehouse ingestion.
+
+### 10.1.3 Standard Connectors
+User‑configured connectors using:
+- REST API
+- JDBC
+- ODBC
+- Custom file systems  
+Suitable for systems not supported by Managed Connectors.
+
+### 10.1.4 Data Formats
+Supported formats:
+- CSV  
+- JSON  
+- Avro  
+- Parquet  
+- Delta  
+- ORC  
+- Images / Binary  
+
+### 10.1.5 Migrate to Delta Table
+Convert an existing table to Delta:
+```sql
+CONVERT TO DELTA parquet.`/path/table`;
+```
+Or upgrade managed tables to Delta format using:
+```sql
+ALTER TABLE table_name SET TBLPROPERTIES (delta.enableChangeDataFeed = true);
+```
+
+---
+
+## 10.2 Delta Lake
+
+### 10.2.1 Operations
+Delta supports:
+- `UPDATE`
+- `DELETE`
+- `MERGE`
+- `INSERT`
+Examples:
+```sql
+UPDATE table SET salary = salary + 2000 WHERE dept = 'IT';
+DELETE FROM table WHERE age > 60;
+```
+
+### 10.2.2 Data Layout
+#### Liquid Clustering
+Improves layout without strict partitioning—auto organizes by keys.
+
+#### Data Skipping
+Delta stores stats allowing skipping irrelevant files → faster queries.
+
+#### Tune File Size
+Optimize file sizes for performance:
+```sql
+OPTIMIZE table ZORDER BY (column);
+```
+
+#### Table Size & Partition Tables
+Manage partitions for performance:
+```sql
+CREATE TABLE sales (... )
+PARTITIONED BY (year, month);
+```
+
+---
+
+### 10.2.3 Schema Enforcement and Evolution
+Schema Enforcement:
+- Automatically blocks bad writes  
+Example:
+```python
+df.write.format("delta").save(path)  # error if schema mismatches
+```
+
+Schema Evolution:
+```python
+df.write.option("mergeSchema", "true").format("delta").save(path)
+```
+
+---
+
+### 10.2.4 Table Features
+#### Change Data Feed (CDF)
+Track row‑level changes:
+```sql
+ALTER TABLE t SET TBLPROPERTIES (delta.enableChangeDataFeed = true);
+```
+
+#### Table Constraints
+```sql
+ALTER TABLE users ADD CONSTRAINT age_valid CHECK (age > 0);
+```
+
+#### Generated Columns
+```sql
+ALTER TABLE t ADD COLUMN amount_tax AS (amount * 0.1);
+```
+
+#### Row Tracking
+Keeps track of row identity across updates.
+
+#### Type Widening
+Allows safe type changes (e.g., INT → BIGINT).
+
+---
+
+## 10.3 Structured Streaming (Short & Simple)
+
+### What It Is
+Structured Streaming is Spark’s engine for **real-time data processing** using the same DataFrame API as batch jobs.
+
+### How It Works
+- Watches a source (Kafka, files, Delta tables).
+- Processes new data as it arrives.
+- Writes output continuously.
+
+### Mini Example
+```python
+stream_df = spark.readStream.format("csv")     .option("header", True)     .load("/mnt/live_data/")
+
+query = stream_df.writeStream     .format("console")     .start()
+```
+
+---
+
+## 10.4 Data Governance with Unity Catalog (Short & Clean)
+
+###  What It Is
+A centralized governance layer for:
+- Data permissions  
+- Lineage  
+- Auditing  
+- Data classification  
+
+Ensures **secure and compliant** data usage across the organization.
+
+###  Example  
+“Give only Finance team access to sales tables.”
+
+```sql
+GRANT SELECT ON TABLE sales TO `finance_team`;
+```
+
+---
+
+## 10.5 Unity Catalog (Crisp Overview)
+
+###  Purpose
+Unified system to manage:
+- Users & permissions  
+- Data assets (tables, views, volumes)  
+- Metadata  
+- Lineage  
+
+###  Structure
+**Metastore → Catalog → Schema → Table**
+
+### Example: Creating objects
+```sql
+CREATE CATALOG retail;
+CREATE SCHEMA retail.sales;
+CREATE TABLE retail.sales.transactions (id INT, amount DOUBLE);
+```
+
+---
+
+## 10.6 Catalog Explorer (Short & Clear)
+
+### What It Is  
+A **UI tool** inside Databricks that allows you to:
+- Browse catalogs, schemas, tables  
+- View schema, metadata, permissions  
+- See lineage visually  
+
+### Example Use Case  
+“Check which dashboards or jobs are using my Delta table.”
+
+Catalog Explorer → Select Table → **Lineage Tab**
+
+---
+
+
 
 
